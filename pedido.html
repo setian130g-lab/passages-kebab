@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Pedido – Passages Kebab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <div class="page-hero">
+      <div class="page-hero-content">
+        <span class="page-hero-emoji">🤖</span>
+        <h1>HACER <span>PEDIDO</span></h1>
+        <p>Habla con nuestro asistente IA para confirmar tu entrega</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="pedido-layout">
+
+          <!-- CARRITO -->
+          <div class="sticky-cart" style="top:84px; position:sticky;">
+            <div class="cart-title">🛒 Tu pedido</div>
+            <div class="cart-body" id="cartItems"></div>
+            <div class="cart-footer" id="cartFooter" style="display:none">
+              <div class="cart-total">
+                <span>Total</span>
+                <span id="cartTotal">0.00 €</span>
+              </div>
+              <button class="btn btn-primary w100" id="sendOrderBtn">Enviar pedido al asistente →</button>
+              <a href="carta.html" class="btn btn-ghost w100" style="margin-top:8px; display:block; text-align:center; font-size:.8rem; padding:10px">← Seguir eligiendo</a>
+            </div>
+          </div>
+
+          <!-- CHAT -->
+          <div class="chat-box">
+            <div class="chat-header">
+              <div class="chat-avatar">🤖</div>
+              <div>
+                <div class="chat-name">Asistente Passages</div>
+                <div class="chat-status"><span class="status-dot"></span> En línea</div>
+              </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+              <div class="msg bot">
+                <div class="msg-bubble">¡Hola! 👋 Soy el asistente de <strong>Passages Kebab</strong>. Cuando tengas tu carrito listo, pulsa el botón o escríbeme directamente. ¿En qué te ayudo?</div>
+              </div>
+            </div>
+            <form class="chat-input-row" id="chatForm">
+              <input type="text" id="chatInput" placeholder="Escribe tu mensaje..." autocomplete="off"/>
+              <button type="submit" class="chat-send-btn">➤</button>
+            </form>
+            <p class="chat-disclaimer">Asistente powered by IA · Passages Kebab © 2025</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="menu-data.js"></script>
+  <script src="cart.js"></script>
+  <script src="components.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

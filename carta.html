@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Carta – Passages Kebab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="page-wrapper">
+
+    <!-- PAGE HERO -->
+    <div class="page-hero">
+      <div class="page-hero-content">
+        <span class="page-hero-emoji">🌯</span>
+        <h1>NUESTRA <span>CARTA</span></h1>
+        <p>Añade lo que quieras al carrito y pasa a hacer tu pedido</p>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+        <div class="carta-layout">
+
+          <!-- MENU -->
+          <div>
+            <div class="cat-filters" id="catFilters">
+              <button class="cat-btn active" data-cat="all">Todo</button>
+              <button class="cat-btn" data-cat="kebabs">Kebabs</button>
+              <button class="cat-btn" data-cat="durum">Dürüm</button>
+              <button class="cat-btn" data-cat="pizzas">Pizzas</button>
+              <button class="cat-btn" data-cat="sides">Extras</button>
+              <button class="cat-btn" data-cat="bebidas">Bebidas</button>
+            </div>
+            <div class="menu-grid" id="menuGrid"></div>
+          </div>
+
+          <!-- STICKY CART -->
+          <div class="sticky-cart">
+            <div class="cart-title">🛒 Tu pedido</div>
+            <div class="cart-body" id="cartItems">
+              <p class="cart-empty">Añade productos al carrito</p>
+            </div>
+            <div class="cart-footer" id="cartFooter" style="display:none">
+              <div class="cart-total">
+                <span>Total</span>
+                <span id="cartTotal">0.00 €</span>
+              </div>
+              <a href="pedido.html" class="btn btn-primary w100">Ir a pedir →</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="menu-data.js"></script>
+  <script src="cart.js"></script>
+  <script src="components.js"></script>
+  <script>
+    // ── Render Menu ──────────────────────────────────────
+    function renderMenu(cat = 'all') {
+      const filtered = cat === 'all' ? MENU : MENU.filter(i => i.cat === cat);
+      document.getElementById('menuGrid').innerHTML = filtered.map(item => `
+        <div class="menu-card">
+          <div class="menu-card-img">
+            ${item.emoji}
+            ${item.badge ? `<span class="menu-badge">${item.badge}</span>` : ''}
+          </div>
+          <div class="menu-card-body">
+            <div class="menu-card-name">${item.name}</div>
+            <div class="menu-card-desc">${item.desc}</div>
+            <div class="menu-card-footer">
+              <div class="menu-price">${item.price.toFixed(2)} €</div>
+              <button class="add-btn" data-id="${item.id}">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = MENU.find(m => m.id === parseInt(btn.dataset.id));
+          Cart.add(item);
+          renderCartSidebar();
+          btn.textContent = '✓';
+          btn.style.background = '#22c55e';
+          setTimeout(() => { btn.textContent = '+'; btn.style.background = ''; }, 700);
+        });
+      });
+    }
+
+    // ── Render Cart Sidebar ───────────────────────────────
+    function renderCartSidebar() {
+      const cart = Cart.get();
+      const itemsEl  = document.getElementById('cartItems');
+      const footerEl = document.getElementById('cartFooter');
+      const totalEl  = document.getElementById('cartTotal');
+
+      if (!itemsEl) return;
+
+      if (cart.length === 0) {
+        itemsEl.innerHTML = '<p class="cart-empty">Añade productos al carrito</p>';
+        if (footerEl) footerEl.style.display = 'none';
+        return;
+      }
+
+      itemsEl.innerHTML = cart.map(c => `
+        <div class="cart-item">
+          <span class="cart-item-qty">${c.qty}×</span>
+          <span class="cart-item-name">${c.name}</span>
+          <span class="cart-item-price">${(c.price * c.qty).toFixed(2)} €</span>
+          <button class="cart-item-del" data-id="${c.id}">✕</button>
+        </div>
+      `).join('');
+      if (totalEl) totalEl.textContent = Cart.total().toFixed(2) + ' €';
+      if (footerEl) footerEl.style.display = 'block';
+
+      itemsEl.querySelectorAll('.cart-item-del').forEach(btn => {
+        btn.addEventListener('click', () => {
+          Cart.remove(parseInt(btn.dataset.id));
+          renderCartSidebar();
+        });
+      });
+    }
+
+    // ── Filters ──────────────────────────────────────────
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderMenu(btn.dataset.cat);
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMenu();
+      renderCartSidebar();
+      window.addEventListener('cartUpdated', renderCartSidebar);
+    });
+  </script>
+</body>
+</html>
